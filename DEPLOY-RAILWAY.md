@@ -85,29 +85,41 @@ RAILWAY_SERVICE_ROLE=web
 
 **Networking → Generate Domain** → скопировать URL → вставить в `APP_URL`
 
+**Settings → Deploy → Healthcheck Path:** `/up` (только для `api`!)
+
 ### 2.4 Сервис `worker` (queue)
 
 1. **+ New** → **GitHub Repo** → тот же репозиторий
-2. Root Directory: `backend`
-3. **Variables** — те же что у `api`, плюс:
+2. **Settings → Source:** Root Directory = `backend`, Builder = Dockerfile
+3. **Settings → Deploy → Healthcheck:** **отключить** (worker не отвечает на HTTP — иначе `Healthcheck failed`)
+4. **Settings → Networking:** Public Networking — **off**
+5. **Variables** — скопировать **все** переменные с `api` (не из `.env.example`!):
 
 ```env
+# обязательно Railway MySQL references, НЕ DB_HOST=mysql
+DB_HOST=${{MySQL.MYSQLHOST}}
+DB_PORT=${{MySQL.MYSQLPORT}}
+DB_DATABASE=${{MySQL.MYSQLDATABASE}}
+DB_USERNAME=${{MySQL.MYSQLUSER}}
+DB_PASSWORD=${{MySQL.MYSQLPASSWORD}}
+
+APP_KEY=...          # тот же что у api
+APP_ENV=production
+QUEUE_CONNECTION=database
+# ... остальные как у api
+
 RAILWAY_SERVICE_ROLE=worker
 ```
 
-4. **Deploy** → отключить Public Networking (worker не нужен снаружи)
+> **Ошибка `getaddrinfo for mysql failed`** = в Variables стоит `DB_HOST=mysql` (это только для docker-compose). Замени на `${{MySQL.MYSQLHOST}}`.
 
 ### 2.5 Сервис `scheduler` (cron)
 
 1. **+ New** → **GitHub Repo** → тот же репозиторий
-2. Root Directory: `backend`
-3. **Variables** — те же что у `api`, плюс:
-
-```env
-RAILWAY_SERVICE_ROLE=scheduler
-```
-
+2. Root Directory: `backend`, Builder = Dockerfile
+3. **Healthcheck:** **отключить**
 4. Public Networking — **off**
+5. **Variables** — те же что у `api` + `RAILWAY_SERVICE_ROLE=scheduler`
 
 ### 2.6 Проверка API
 

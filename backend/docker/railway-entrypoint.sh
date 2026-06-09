@@ -13,12 +13,10 @@ run_migrations() {
 
 case "${RAILWAY_SERVICE_ROLE:-web}" in
   worker)
-    run_migrations
     echo "Starting queue worker..."
     exec php artisan queue:work --sleep=3 --tries=3 --timeout=60
     ;;
   scheduler)
-    run_migrations
     echo "Starting scheduler..."
     exec php artisan schedule:work
     ;;
