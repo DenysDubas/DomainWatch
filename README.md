@@ -40,46 +40,8 @@ make frontend-install
 make frontend-dev
 ```
 
-Visit `http://localhost:5173` for the frontend, `http://localhost:8000` for the API.
+Visit `https://denysdubas.github.io/DomainWatch` for the frontend
 
-## Environment
-
-### Backend (`backend/.env`)
-
-Key variables:
-```
-APP_URL=http://localhost:8000
-FRONTEND_URL=http://localhost:5173
-DB_HOST=mysql
-DB_DATABASE=domain_monitor
-DB_USERNAME=dmuser
-DB_PASSWORD=dmpassword
-QUEUE_CONNECTION=database
-```
-
-For email notifications (optional):
-```
-MAIL_MAILER=smtp
-MAIL_HOST=smtp.mailgun.org
-MAIL_PORT=587
-MAIL_USERNAME=xxx
-MAIL_PASSWORD=xxx
-```
-
-### Frontend (`frontend/.env`)
-
-```
-VITE_API_URL=http://localhost:8000
-```
-
-For GitHub Pages set `VITE_API_URL` in repository secrets (see CI workflow).
-
-## Deploy (Frontend + Backend)
-
-See **[DEPLOY-RAILWAY.md](./DEPLOY-RAILWAY.md)** for full demo deployment guide (Railway + GitHub Pages).
-
-Frontend deploys automatically via `.github/workflows/deploy-frontend.yml` on push to `main`.
-Backend tests run via `.github/workflows/ci.yml`.
 
 ## API Endpoints
 
@@ -87,7 +49,6 @@ Backend tests run via `.github/workflows/ci.yml`.
 POST   /api/v1/register
 POST   /api/v1/login
 POST   /api/v1/logout            [auth]
-GET    /api/v1/me                [auth]
 
 GET    /api/v1/domains           [auth]
 POST   /api/v1/domains           [auth]
@@ -95,8 +56,6 @@ GET    /api/v1/domains/:id       [auth]
 PUT    /api/v1/domains/:id       [auth]
 DELETE /api/v1/domains/:id       [auth]
 
-GET    /api/v1/domains/:id/logs  [auth]
-POST   /api/v1/domains/:id/check [auth]  ← manual trigger (queued, 202)
 ```
 
 ## How Monitoring Works
